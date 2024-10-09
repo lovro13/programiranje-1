@@ -39,6 +39,18 @@ Zapišite program, ki na sklad zaporedno postavlja števila od 13 do 42.
 
 Poleg registrov in sklada lahko podatke shranjujemo tudi v pomnilniške celice. To storimo prek naslovov oblike `[N]`, kjer je `N` zaporedni indeks mesta v pomnilniku, ali `[R]`, kjer je `R` ime registra, v katerem je shranjen indeks. Zapišite program, ki zamenja vsebini pomnilniških celic na naslovih `[A]` in `[B]`.
 
+MOV A, 25
+MOV B, 50
+JMP main
+
+    main:
+    	MOV C, A
+    	MOV A, B
+    	MOV B, C
+    	MOV C, 0
+    
+    HLT
+
 ## Iskanje najmanjšega števila v seznamu
 
 Zapišite program, ki poišče najmanjše število v danem seznamu. Seznam naj bo podan na začetku pomnilnika in sicer tako, da je v prvih dveh celicah ukaz za skok na začetek programa, v tretji celici dolžina seznama, v naslednjih celicah zaporedoma elementi seznama, takoj za njimi pa celica, v katerega naj se zapiše najmanjše število. Podatke lahko v pomnilnik zapišemo z ukazom `DB`, ki se ne prevede v noben strojni ukaz, ampak samo shrani vrednost v naslednji prostor v pomnilniku. Zgornje podatke bi z njim zapisali takole:
