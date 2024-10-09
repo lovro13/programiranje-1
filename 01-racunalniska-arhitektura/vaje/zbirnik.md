@@ -94,6 +94,42 @@ Zapišite funkcijo `poisci_minimum`, ki v register `B` shrani indeks najmanjšeg
         POP C
         HLT
 
+    moja rešitev
+            JMP main
+    dolzina:
+        DB 10    ; število elementov v seznamu
+    seznam:
+        DB 50    ; seznam
+        DB 56
+        DB 60
+        DB 46
+        DB 44
+        DB 58
+        DB 42
+        DB 52
+        DB 48
+        DB 54
+    minimum:
+        DB 0    ; na koncu bo tu minimum
+    
+    main:
+        MOV C, seznam
+        MOV D, [C]
+        MOV [minimum], D
+    .loop:
+        MOV D, [C]
+        CMP D, [minimum]
+        JA jump
+        MOV [minimum], D
+    
+    jump:
+        INC C
+        CMP C, minimum
+        JNE .loop
+    
+        HLT
+    
+
 ## Urejanje seznama
 
 Zapišite funkcijo `uredi`, ki elemente v rezini [A:C] uredi od najmanjšega do največjega. Pri tem naj vrednosti vseh registrov pusti pri miru. Eden najenostavnejših algoritmov za urejanje je urejanje z izbiranjem. V njem se zapeljete čez seznam, poiščete indeks najmanjšega elementa, nato pa ta element zamenjate s tistim na prvem mestu. Postopek nadaljujete s preostankom seznama, dokler ne pridete do konca.
