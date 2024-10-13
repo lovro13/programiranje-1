@@ -75,27 +75,8 @@ Zapišite program, ki poišče najmanjše število v danem seznamu. Seznam naj b
     main:
         ...
 
-## Indeks najmanjšega števila v seznamu
-
-Zapišite funkcijo `poisci_minimum`, ki v register `B` shrani indeks najmanjšega števila v rezini `[A:C]` torej med števili, ki se nahajajo od vključno naslova, shranjenega v `A`, do naslova pred tistim, shranjenim v `C`. Funkcija naj z izjemo registra `B` vrednosti ostalih registrov pusti nespremenjene. Če funkcija deluje pravilno, bi moral spodnji program delovati kot tisti iz prejšnje naloge:
-
-    main:
-        ; pripravimo parametre funkcije
-        MOV A, seznam
-        MOV C, seznam
-        ADD C, [dolzina]
-        ; pokličemo funkcijo
-        CALL poisci_minimum
-        ; v mesto, na katerega kaže minimum, shranimo vrednost, na katero kaže B
-        ; ker tega ne moremo narediti direktno, si pomagamo z registrom C
-        PUSH C 
-        MOV C, [B]
-        MOV [minimum], C
-        POP C
-        HLT
-
     moja rešitev
-            JMP main
+        JMP main
     dolzina:
         DB 10    ; število elementov v seznamu
     seznam:
@@ -128,7 +109,25 @@ Zapišite funkcijo `poisci_minimum`, ki v register `B` shrani indeks najmanjšeg
         JNE .loop
     
         HLT
-    
+
+## Indeks najmanjšega števila v seznamu
+
+Zapišite funkcijo `poisci_minimum`, ki v register `B` shrani indeks najmanjšega števila v rezini `[A:C]` torej med števili, ki se nahajajo od vključno naslova, shranjenega v `A`, do naslova pred tistim, shranjenim v `C`. Funkcija naj z izjemo registra `B` vrednosti ostalih registrov pusti nespremenjene. Če funkcija deluje pravilno, bi moral spodnji program delovati kot tisti iz prejšnje naloge:
+
+    main:
+        ; pripravimo parametre funkcije
+        MOV A, seznam
+        MOV C, seznam
+        ADD C, [dolzina]
+        ; pokličemo funkcijo
+        CALL poisci_minimum
+        ; v mesto, na katerega kaže minimum, shranimo vrednost, na katero kaže B
+        ; ker tega ne moremo narediti direktno, si pomagamo z registrom C
+        PUSH C 
+        MOV C, [B]
+        MOV [minimum], C
+        POP C
+        HLT    
 
 ## Urejanje seznama
 
