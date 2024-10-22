@@ -66,6 +66,7 @@ let rec map f list =
 (*----------------------------------------------------------------------------*]
  Časovna zahtevnost operatorja [@] je linearna v prvem argumentu, poskušajte 
  napisati reverse_tlrec tako, da bo bolj učinkovit in hkrati repno rekurziven.
+ napisati reverse_tlrec tako, da bo bolj učinkovit in hkrati repno rekurziven.
  Pri tem ne smete uporabiti vgrajene funkcije [List.rev] ali [List.rev_append].
 [*----------------------------------------------------------------------------*)
 
