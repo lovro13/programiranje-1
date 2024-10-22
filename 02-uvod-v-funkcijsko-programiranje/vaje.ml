@@ -36,20 +36,27 @@ Napišite funkcijo `skalarni_produkt : vector -> vector -> float`, ki izračuna
 skalarni produkt dveh vektorjev
 [*----------------------------------------------------------------------------*)
 
-let rec skalarni_produkt = ()
+let rec skalarni_produkt vector1 vector2 = 
+    let produkt_po_tockah = List.map2 (fun x y -> x *. y) vector1 vector2 in
+    List.fold_left (+.) 0.0 produkt_po_tockah
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `norma : vector -> float`, ki vrne evklidsko normo vektorja.
 [*----------------------------------------------------------------------------*)
 
-let rec norma = ()
+let rec norma vector1 =
+    let norma_na_kvadrat = skalarni_produkt vector1 vector1 in
+    sqrt norma_na_kvadrat
+
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `projeciraj : vector -> vector -> vector`, ki izračuna 
 projekcijo prvega vektorja na drugega.
 [*----------------------------------------------------------------------------*)
 
-let rec projeciraj = ()
+let rec projeciraj vektor1 vektor2= 
+    let skalarni_produkt12 = skalarni_produkt vektor1 vektor2 in
+    razteg (skalarni_produkt12 /. (norma vektor1)) (razteg (norma vektor1) vektor1)
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `ovij : string -> string -> string`, ki sprejme ime HTML 
@@ -60,18 +67,24 @@ Primer:
 
 [*----------------------------------------------------------------------------*)
 
-let rec ovij = ()
+let rec ovij oznaka tekst = 
+    "<" ^ oznaka ^ ">" ^ tekst ^ "<\\" ^ oznaka ^ ">"
+    
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `zamakni : int -> string -> string`, ki sprejme število 
 presledkov in niz ter vrne niz, v katerem je vsaka vrstica zamaknjena za ustrezno število presledkov.
 
 Primer:
-`zamakni 4 "Hello, world!"`
+`zamakni 4 "Hello, \n world!";;`
 
 [*----------------------------------------------------------------------------*)
 
-let rec zamakni = ()
+let rec zamakni length1 string1= 
+        let presledki = String.make length1 ' ' in
+        let seznam_vrstic = String.split_on_char '\n' string1 in
+        let nov_seznam = List.map (fun vrstica -> presledki ^ vrstica) seznam_vrstic in
+        String.concat "\n" nov_seznam
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `ul : string list -> string`, ki sprejme seznam nizov in vrne 
@@ -82,7 +95,11 @@ Primer:
 
 [*----------------------------------------------------------------------------*)
 
-let rec ul = ()
+let rec ul  seznam= 
+    let seznam1 = List.map (ovij "li") seznam in
+    let string_vrstice = String.concat "\n" seznam1 in
+    let string_vrstice2 = zamakni 4 string_vrstice in
+    ovij "ul" ("\n" ^ string_vrstice2 ^ "\n")
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `razdeli_vrstico : string -> string * string`, ki sprejme niz, 
@@ -93,7 +110,11 @@ Primer:
 
 [*----------------------------------------------------------------------------*)
 
-let rec razdeli_vrstico = ()
+let rec razdeli_vrstico string1 = 
+    let seznam  = String.split_on_char ',' string1 in
+    let prvi_del = List.nth seznam 0 in
+    let drugi_del = List.nth seznam 1 in
+    (String.trim prvi_del, String.trim drugi_del)
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `pretvori_v_seznam_parov : string -> (string * string) list`, 
@@ -105,7 +126,10 @@ Primer:
 
 [*----------------------------------------------------------------------------*)
 
-let rec pretvori_v_seznam_parov = ()
+let rec pretvori_v_seznam_parov string1 = 
+    let seznam_vrstic = String.split_on_char '\n' string1 in
+    let seznam_vrstic_dvojic = List.map (razdeli_vrstico) seznam_vrstic in
+    seznam_vrstic_dvojic
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `pretvori_druge_komponente : ('a -> 'b) -> (string * 'a) list -> (string * 'b) list`,
@@ -119,8 +143,10 @@ pretvori_druge_komponente String.length seznam
 
 [*----------------------------------------------------------------------------*)
 
-let rec pretvori_druge_komponente = ()
-
+let rec pretvori_druge_komponente funkcija seznam_parov = 
+    let seznam = List.map (fun (prvi, drugi) -> (prvi, funkcija drugi)) seznam_parov in
+    seznam  
+    
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `izracunaj_skupni_znesek : string -> string -> float`, ki 
 sprejme večvrstična niza nakupovalnega seznama in cenika in izračuna skupni 
