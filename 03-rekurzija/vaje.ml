@@ -174,35 +174,45 @@ let unzip_tlrec list_of_tuples =
  - : int = 12
 [*----------------------------------------------------------------------------*)
 
+let rec fold_left_no_acc _ _ = ()
+
+let primer_fold_left_no_acc =
+  fold_left_no_acc (^) ["F"; "I"; "C"; "U"; "S"]
+(* val primer_fold_left_no_acc : string = "FICUS" *)
 let rec loop condition f x = 
   if condition x then loop condition f (f x) else x
 
-(*----------------------------------------------------------------------------*]
- Funkcija [fold_left_no_acc f list] sprejme seznam [x0; x1; ...; xn] in
- funkcijo dveh argumentov [f] in vrne vrednost izračuna
- f(... (f (f x0 x1) x2) ... xn).
- V primeru seznama z manj kot dvema elementoma vrne napako.
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # fold_left_no_acc (^) ["F"; "I"; "C"; "U"; "S"];;
- - : string = "FICUS"
+(*----------------------------------------------------------------------------*
+ ## Funkcija `apply_sequence`
 [*----------------------------------------------------------------------------*)
 
+(*----------------------------------------------------------------------------*
+ Funkcija `apply_sequence f x n` naj vrne seznam zaporednih uporab funkcije `f`
+ na vrednosti `x` do vključno `n`-te uporabe, torej `[x; f x; f (f x); ...; fⁿ
+ x]`. Funkcija naj bo repno rekurzivna.
+[*----------------------------------------------------------------------------*)
+
+let apply_sequence _ _ _ = ()
+
+let primer_apply_sequence_1 = apply_sequence (fun x -> x * x) 2 5
+(* val primer_apply_sequence_1 : int list = [2; 4; 16; 256; 65536; 4294967296] *)
+
+let primer_apply_sequence_2 = apply_sequence (fun x -> x * x) 2 (-5)
+(* val primer_apply_sequence_2 : int list = [] *)
 let rec fold_left_no_acc f list =
   match list with
   | [x; y] -> f x y
   | x :: rep -> f x (fold_left_no_acc f rep)
   | _ -> failwith "pizdraija"
 
-(*----------------------------------------------------------------------------*]
- Funkcija [apply_sequence f x n] vrne seznam zaporednih uporab funkcije [f] na
- vrednosti [x] do vključno [n]-te uporabe, torej
- [x; f x; f (f x); ...; (f uporabljena n-krat na x)].
- Funkcija je repno rekurzivna.
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # apply_sequence (fun x -> x * x) 2 5;;
- - : int list = [2; 4; 16; 256; 65536; 4294967296]
- # apply_sequence (fun x -> x * x) 2 (-5);;
- - : int list = []
+(*----------------------------------------------------------------------------*
+ ## Funkcija `filter`
+[*----------------------------------------------------------------------------*)
+
+(*----------------------------------------------------------------------------*
+ Funkcija `filter f list` vrne seznam elementov `list`, pri katerih funkcija `f`
+  vrne vrednost `true`.
+  Pri tem ne smete uporabiti vgrajene funkcije `List.filter`.
 [*----------------------------------------------------------------------------*)
 
 let rec apply_sequence f x n =
@@ -214,13 +224,8 @@ let rec apply_sequence f x n =
   in
   aux x n []
 
-(*----------------------------------------------------------------------------*]
- Funkcija [filter f list] vrne seznam elementov [list], pri katerih funkcija [f]
- vrne vrednost [true].
- Pri tem ne smete uporabiti vgrajene funkcije [List.filter].
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # filter ((<)3) [0; 1; 2; 3; 4; 5];;
- - : int list = [4; 5]
+(*----------------------------------------------------------------------------*
+ ## Funkcija `exists`
 [*----------------------------------------------------------------------------*)
 
 let rec filter f list = 
@@ -252,16 +257,15 @@ let rec exists f list =
   else
     exists f rep 
 
-(*----------------------------------------------------------------------------*]
- Funkcija [first f default list] vrne prvi element seznama, za katerega
- funkcija [f] vrne [true]. Če takšnega elementa ni, vrne [default].
- Funkcija je repno rekurzivna.
- Pri tem ne smete uporabiti vgrajene funkcije [List.find] ali podobnih. 
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # first ((<) 3) 0 [1; 1; 2; 3; 5; 8];;
- - : int = 5
- # first ((<) 8) 0 [1; 1; 2; 3; 5; 8];;
- - : int = 0
+(*----------------------------------------------------------------------------*
+ ## Funkcija `first`
+[*----------------------------------------------------------------------------*)
+
+(*----------------------------------------------------------------------------*
+ Funkcija `first f default list` vrne prvi element seznama, za katerega
+  funkcija `f` vrne `true`. Če takšnega elementa ni, vrne `default`.
+  Funkcija je repno rekurzivna.
+  Pri tem ne smete uporabiti vgrajene funkcije `List.find` ali podobnih.
 [*----------------------------------------------------------------------------*)
 
 let rec first f default list = 
