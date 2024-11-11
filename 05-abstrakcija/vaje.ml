@@ -20,9 +20,13 @@ module type NAT = sig
 
   val eq  : t -> t -> bool
   val zero : t
+  val one : t
   (* Dodajte manjkajoče! *)
-  (* val to_int : t -> int *)
-  (* val of_int : int -> t *)
+  val to_int : t -> int
+  val of_int : int -> t
+  val add : t -> t -> t
+  val sub : t -> t -> t
+  val mul : t -> t -> t
 end
 
 (*----------------------------------------------------------------------------*
@@ -36,10 +40,15 @@ end
 module Nat_int : NAT = struct
 
   type t = int
-  let eq x y = failwith "later"
-  let zero = 0
-  (* Dodajte manjkajoče! *)
 
+  let eq x y = (x = y)
+  let zero = 0
+  let one = 1
+  let to_int x = x
+  let of_int x = x
+  let add x y = x + y
+  let sub x y = x - y
+  let mul x y = x * y
 end
 
 (*----------------------------------------------------------------------------*
@@ -53,12 +62,60 @@ end
 
 module Nat_peano : NAT = struct
 
-  type t = unit (* To morate spremeniti! *)
-  let eq x y = failwith "later"
-  let zero = () (* To morate spremeniti! *)
-  (* Dodajte manjkajoče! *)
+  type t = 
+  | Zero
+  | Succ of t
 
-end
+  let rec eq x y =
+  match x, y with
+  | Zero, Zero -> true
+  | Succ _, Zero -> false
+  | Zero, Succ _ -> false
+  | Succ x', Succ y' -> eq x' y'
+
+  let zero = Zero
+  let one = Succ Zero
+
+  let to_int x = 
+    let rec aux acc = function
+    | Zero -> acc
+    | Succ x -> aux (acc + 1) x
+  in
+  aux 0 x
+  
+  let of_int x = 
+    let rec aux acc = function
+    | 0 -> acc
+    | x' -> aux (Succ acc) (x' - 1)
+  in
+  aux Zero x
+
+  let add x y = 
+    let rec aux acc = function
+    | Zero -> acc
+    | Succ x -> aux (Succ acc) x
+  in
+  aux x y
+
+  let sub x y = 
+    let rec aux acc = function
+    | Zero -> acc
+    | Succ x -> 
+      let y = match acc with
+              | Succ y' -> y'
+              | _ -> Zero in 
+              aux (y) x
+  in
+  aux x y
+
+  let mul x y = 
+    let rec aux acc = function
+    | Zero -> acc
+    | Succ x' -> aux (add x acc) x'
+  in
+  aux Zero y
+
+ end
 
 (*----------------------------------------------------------------------------*
  Z ukazom `let module ImeModula = ... in ...` lahko modul definiramo samo
@@ -76,11 +133,27 @@ end
  `Nat`.
 [*----------------------------------------------------------------------------*)
 
-let sum_nat_100 = 
+let sum_nat_100_int = 
   (* let module Nat = Nat_int in *)
   let module Nat = Nat_peano in
-  Nat.zero (* to popravite na ustrezen izračun *)
-  (* |> Nat.to_int *)
+  let rec sum x = 
+    if (Nat.eq x Nat.zero) then Nat.zero
+    else
+      Nat.add x (sum (Nat.sub x Nat.one))
+    in
+  sum (Nat.of_int 100)
+  |> Nat.to_int
+
+  let sum_nat_100_peano = 
+    let module Nat = Nat_int in
+    (* let module Nat = Nat_peano in *)
+    let rec sum x = 
+      if (Nat.eq x Nat.zero) then Nat.zero
+      else
+        Nat.add x (sum (Nat.sub x Nat.one))
+      in
+    sum (Nat.of_int 100)
+    |> Nat.to_int
 (* val sum_nat_100 : int = 5050 *)
 
 (*----------------------------------------------------------------------------*
@@ -135,7 +208,13 @@ let sum_nat_100 =
 module type COMPLEX = sig
   type t
   val eq : t -> t -> bool
-  (* Dodajte manjkajoče! *)
+  val zero : t
+  val one : t
+  val imag : t
+  val neg : t -> t
+  val kong : t -> t
+  val add : t -> t -> t
+  val mul : t -> t -> t
 end
 
 (*----------------------------------------------------------------------------*
@@ -147,9 +226,14 @@ module Cartesian : COMPLEX = struct
 
   type t = {re : float; im : float}
 
-  let eq x y = failwith "later"
-  (* Dodajte manjkajoče! *)
-
+  let eq x y = (x.re = y.re) && (x.im = y.re)
+  let zero = {re = 0.; im = 0.}
+  let one = {re = 1.; im = 0.}
+  let imag = {re = 0.; im = 1.}
+  let neg x = {re = (-1.) *. x.re; im = (-1.) *. x.im}
+  let kong x = {re = x.re; im = (-1.) *. x.im}
+  let add x y = {re = x.re +. y.re; im = x.im +. y.im}
+  let mul x y = {re = x.re *. y.re -. x.im *. y.im; im = y.im *. x.re +. x.im *. y.im}
 end
 
 (*----------------------------------------------------------------------------*
@@ -163,12 +247,24 @@ module Polar : COMPLEX = struct
 
   type t = {magn : float; arg : float}
 
-  (* Pomožne funkcije za lažje življenje. *)
+  (* Pomožne funkcije za lažje življenje. hvala*)
   let pi = 2. *. acos 0.
   let rad_of_deg deg = (deg /. 180.) *. pi
   let deg_of_rad rad = (rad /. pi) *. 180.
 
-  let eq x y = failwith "later"
-  (* Dodajte manjkajoče! *)
-
+  let rec pretvori_kot fi = 
+    if fi > 0. && fi < 2. *. pi then fi
+    else
+      if fi > 2. *. pi then pretvori_kot (fi -. 2. *. pi)
+      else pretvori_kot (fi +. 2. *. pi)
+  let eq x y = (x.magn = y.magn) && ((pretvori_kot x.arg) = (pretvori_kot y.arg))
+  let zero = {magn = 0.; arg = 0.}
+  let one = {magn = 1.; arg = 0.}
+  let imag = {magn = 1.; arg = 0.5 *. pi}
+  let neg x = {magn = x.magn; arg = pi +. x.arg}
+  let kong x = {magn = x.magn;arg = (-1.) *. (pretvori_kot x.arg)}
+  let mul x y = {magn = x.magn *. y.magn; arg = x.arg +. y.arg}
+  let add x y = {magn = x.magn *. cos x.arg +. y.magn *. cos y.arg; arg = x.magn *. sin x.arg +. y.magn *. sin y.arg}
 end
+
+
