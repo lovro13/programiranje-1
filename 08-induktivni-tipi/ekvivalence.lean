@@ -1,3 +1,5 @@
+-- s predavanj ki sem mankal, ampak je podobno kot v ocamlu
+-- rekurzvno na taprvega inpotem to zdruzujemo
 def concat {A : Type} : List A → List A → List A :=
   fun xs ys =>
     match xs with
@@ -6,24 +8,51 @@ def concat {A : Type} : List A → List A → List A :=
 
 #check (concat ["a", "b"] ["c", "d"])
 
+--reverse napisimi s concatom
 def reverse {A : Type} : List A → List A :=
-  sorry
+  fun list_x =>
+    match list_x with
+    | [] => []
+    | x :: xs => concat (reverse xs) [x]
+
+#eval (reverse ["1", "2"])
 
 
-#check (reverse ["a", "b", "c", "d"])
+#eval (reverse ["a", "b", "c", "d"])
 
 def length {A : Type} : List A → Nat :=
-  sorry
+  fun List =>
+    match List with
+    | [] => 0
+    | _ :: xs => 1 + (length xs)
 
 
-#check (length ["a", "b", "c", "d"])
+#eval (length ["a", "b", "c", "d"])
 
+--reverse od singletone je isti singletone, ni treba indukcije oz niti ne moremo iti
+--z indukcijo lahko dokazujemo samo z tridtvami za vsak nekaj ...
+-- o x vemo skoraj nič, razen tega da je tipa A, zato ne moremo indukcije
 theorem trd1  {A : Type} {x : A} : reverse [x] = [x] :=
-  sorry
+  by
+    simp [reverse]
+    simp [concat]
 
+#check trd1
+
+-- smo delali ravno na tablo
 theorem trd2 {A : Type} {xs ys : List A} : length (concat xs ys) = length xs + length ys :=
-  sorry
+  by
+    induction xs with
+    | nil =>
+      simp [concat]
+      simp [length]
+    | cons x xs' ih =>
+      simp [concat]
+      simp [length]
+      rw [ih]
+      rw [Nat.add_assoc]
 
+#check trd2
 -- Tega poznamo že iz predavanj
 theorem trd3 {A : Type} {xs : List A} : concat xs [] = xs :=
   by
@@ -34,22 +63,75 @@ theorem trd3 {A : Type} {xs : List A} : concat xs [] = xs :=
       simp [concat]
       rw [ih]
 
+
+--tudi nekaj na predavnajah
+--concat je asociativen
 theorem trd4 {A : Type} {xs ys zs : List A} : concat (concat xs ys) zs = concat xs (concat ys zs) :=
-  sorry
+  by
+    induction xs with
+    | nil =>
+      simp [concat]
+    | cons x xs' ih =>
+      simp [concat]
+      rw [ih]
+
+#check (trd4)
 
 theorem trd5 {A : Type} {xs ys : List A} : reverse (concat xs ys) = concat (reverse ys) (reverse xs) :=
-  sorry
+  by
+    induction xs with
+    | nil =>
+      simp [reverse]
+      simp [concat]
+      rw [trd3]
+    | cons x xs' ih =>
+      simp [concat]
+      simp [reverse]
+      rw [ih]
+      rw [trd4]
+
+#check (trd5)
 
 theorem trd6 {A : Type} {xs : List A} : length (reverse xs) = length xs :=
-  sorry
+  by
+    induction xs with
+    | nil =>
+      simp[reverse]
+    | cons x xs' ih =>
+      simp [reverse]
+      simp [length]
+      rw [trd2]
+      rw [ih]
+      simp [length]
+      rw [Nat.add_comm]
+
+#check trd6
 
 theorem trd7 {A : Type} {xs : List A} : reverse (reverse xs) = xs :=
-  sorry
+  by
+    induction xs with
+    | nil =>
+      simp [reverse]
+    | cons x xs' ih =>
+      simp [reverse]
+      rw [trd5]
+      simp [reverse]
+      simp [concat]
+      rw [ih]
+
+#check trd7
 
 
 def map {A B : Type} : (A → B) → List A → List B :=
-  sorry
+  fun f xs =>
+    match xs with
+    | [] => []
+    | x :: xs' => (f x) :: (map f xs')
 
+#eval (map (fun a => a + 1) [1, 2])
+
+
+--domaaaa
 theorem map_assoc {A B C : Type} {f : A → B} {g : B → C} {xs : List A} : map g (map f xs) = map (g ∘ f) xs :=
   sorry
 
@@ -62,6 +144,7 @@ theorem map_concat {A B : Type} {f : A → B} {xs ys : List A} : map f (concat x
 
 theorem map_reverse {A B : Type} {f : A → B} {xs : List A} : map f (reverse xs) = reverse (map f xs) :=
   sorry
+--domaaa ali pa nkol :)
 
 inductive tree (A : Type) : Type where
   | empty : tree A
@@ -70,7 +153,11 @@ inductive tree (A : Type) : Type where
 #check tree.rec
 
 def tree_map {A B : Type} : (A → B) → tree A → tree B :=
-  sorry
+  fun f tre =>
+    match tre with
+    | tree.empty => tree.empty
+    | tree.node x l r => tree.node (f x) (tree_map f l) (tree_map f r)
+
 
 theorem tree_map_empty {A B : Type} {f : A → B} : tree_map f tree.empty = tree.empty :=
   sorry
