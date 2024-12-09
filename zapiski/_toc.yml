@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 format: jb-book
 root: 00-uvod.md
 parts:
@@ -14,9 +13,9 @@ parts:
   # - file: 06-curry-howardov-izomorfizem.md
   # - file: 07-uvod-v-lean.md
   # - file: 08-induktivni-tipi.md
-# - caption: Podatkovne strukture in algoritmi
-  # chapters:
-  # - file: 09-racunska-zahtevnost.md
+- caption: Podatkovne strukture in algoritmi
+  chapters:
+  - file: 09-izracunljivost.md
   # - file: 10-iskalna-drevesa.md
   # - file: 11-deli-in-vladaj.md
   # - file: 12-dinamicno-programiranje.md
@@ -41,9 +40,9 @@ parts:
   # - file: 06-curry-howardov-izomorfizem.md
   # - file: 07-uvod-v-lean.md
   # - file: 08-induktivni-tipi.md
-# - caption: Podatkovne strukture in algoritmi
-  # chapters:
-  # - file: 09-racunska-zahtevnost.md
+- caption: Podatkovne strukture in algoritmi
+  chapters:
+  - file: 09-izracunljivost.md
   # - file: 10-iskalna-drevesa.md
   # - file: 11-deli-in-vladaj.md
   # - file: 12-dinamicno-programiranje.md
@@ -52,4 +51,4 @@ parts:
 - caption: Domače naloge
   chapters:
   - file: dn-1.ipynb
->>>>>>> 269fd6f972266c44583e66fa1ded898c5e0ee681
+  - file: dn-2.ipynb
