@@ -1,6 +1,7 @@
 (* 
 Natančno definirajte pogoje, da funkcija `f` uredi seznam. 
 *)
+(*f uredi seznam če 1. f: A List -> A List; ys = f xs; 2. za vsak i > 0 je y[i-1] <= f[i]; 3. ys je permutacija len(ys) = len(xs)*)
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
  Urejanje z Vstavljanjem
@@ -19,12 +20,31 @@ Natančno definirajte pogoje, da funkcija `f` uredi seznam.
 [*----------------------------------------------------------------------------*)
 
 
+let rec insert y xs =
+  match xs with
+  | [] -> [y]
+  | x :: xs' ->
+    if x <= y then x :: insert y xs'
+    else y :: x :: xs'
+
+let test1 = insert 5 []  (* Rezultat: [5] *)
+let test2 = insert 3 [1; 4; 7]  (* Rezultat: [1; 3; 4; 7] *)
+let test3 = insert 6 [1; 3; 4; 7]  (* Rezultat: [1; 3; 4; 6; 7] *)
+let test4 = insert 0 [1; 2; 3]  (* Rezultat: [0; 1; 2; 3] *)
+let test5 = insert 8 [1; 3; 5]  (* Rezultat: [1; 3; 5; 8] *)
+
 (*----------------------------------------------------------------------------*]
  Prazen seznam je že urejen. Funkcija [insert_sort] uredi seznam tako da
  zaporedoma vstavlja vse elemente seznama v prazen seznam.
 [*----------------------------------------------------------------------------*)
 
-
+let rec insert_sort list = 
+  let rec aux acc ost = 
+    match ost with
+    | [] -> acc
+    | x :: xs -> aux (insert x acc) xs
+  in
+  aux [] list
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
  Urejanje z Izbiranjem
