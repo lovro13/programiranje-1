@@ -46,6 +46,8 @@ let rec insert_sort list =
   in
   aux [] list
 
+let test6 = insert_sort [2; 3; 5; 1231; 2; 51351; 156]
+
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
  Urejanje z Izbiranjem
 [*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*)
@@ -92,19 +94,41 @@ let rec insert_sort list =
  - : int array = [|0; 4; 2; 3; 1|]
 [*----------------------------------------------------------------------------*)
 
+let swap list i j = 
+  let temp = list.(j) in
+  list.(j) <- list.(i);
+  list.(i) <- temp;
+  ()
+
+let test7 = [|0; 1; 2; 3; 4|]
+let test8 = swap test7 1 4
 
 (*----------------------------------------------------------------------------*]
  Funkcija [index_min a lower upper] poišče indeks najmanjšega elementa tabele
  [a] med indeksoma [lower] and [upper] (oba indeksa sta vključena).
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- index_min [|0; 2; 9; 3; 6|] 2 4 = 4
+ index_min [|0; 2; 9; 3; 6|] 2 4 = 3
 [*----------------------------------------------------------------------------*)
 
+let rec index_min arr lower upper = 
+  if lower = upper then lower
+  else let nov_min = index_min arr (lower + 1) upper in
+  if arr.(lower) <= arr.(nov_min) then lower else nov_min
+
+let test9 = index_min [|0; 2; 9; 3; 6|] 2 4
 
 (*----------------------------------------------------------------------------*]
  Funkcija [selection_sort_array] implementira urejanje z izbiranjem na mestu. 
 [*----------------------------------------------------------------------------*)
 
+let selection_sort_array array = 
+  let n = Array.length array - 1 in
+  for i = 0 to n do
+    swap array i (index_min array i n)
+  done
+
+let test10 = [|5; 3; 8; 4; 2; 7|]
+let test11 = selection_sort_array test10
 
 (*----------------------------------------------------------------------------*]
  Funkcija [min_and_rest list] vrne par [Some (z, list')] tako da je [z]
@@ -112,12 +136,39 @@ let rec insert_sort list =
  pojavitvijo elementa [z]. V primeru praznega seznama vrne [None]. 
 [*----------------------------------------------------------------------------*)
 
+let min_and_rest list =
+  match list with
+  | [] -> None
+  | hd :: tl -> 
+    let z = List.fold_left min hd list in
+    let list' = 
+      let rec odstrani_z lst elem = 
+        match lst with
+        | [] -> []
+        | hd :: tl -> if hd == z then tl 
+        else hd :: (odstrani_z tl elem) in
+      odstrani_z list z
+      in
+    Some (z, list')
+
+let test12 = [5; 3; 8; 4; 2; 7]
+let test13 = min_and_rest test12
+
 (*----------------------------------------------------------------------------*]
  Funkcija [selection_sort] je implementacija zgoraj opisanega algoritma.
  Namig: Uporabi [min_and_rest] iz prejšnje naloge.
 [*----------------------------------------------------------------------------*)
 
 
+let rec selection_sort list = 
+  match list with
+  | [] -> []
+  | hd :: tl -> let par = min_and_rest list in
+  match par with
+  | None -> []
+  | Some (z, list') -> z :: (selection_sort list')
+
+let test14 = selection_sort test12
 (*----------------------------------------------------------------------------*]
  Funkcija [randlist len max] generira seznam dolžine [len] z naključnimi
  celimi števili med 0 in [max].
@@ -126,6 +177,9 @@ let rec insert_sort list =
  val l : int list = [0; 1; 0; 4; 0; 9; 1; 2; 5; 4]
 [*----------------------------------------------------------------------------*)
 
+let rec randlist len max = 
+  if len > 0 then (Random.int max) :: (randlist (len - 1) max)
+  else []
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  Sedaj lahko s pomočjo [randlist] primerjamo našo urejevalno funkcijo (imenovana
@@ -134,3 +188,7 @@ let rec insert_sort list =
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  let test = (randlist 100 100) in (our_sort test = List.sort compare test);;
 [*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*)
+
+let test16 = 
+  let lst = randlist 1000 100 in
+  (selection_sort lst = List.sort compare lst)

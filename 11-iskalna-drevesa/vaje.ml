@@ -168,23 +168,13 @@ let rec member2 int1 tree =
  - : int option = None
 [*----------------------------------------------------------------------------*)
 
+(* narobe!!!!! *)
 let rec succ tree = 
-     let start = 
-          match tree with
-          | Empty -> Empty
-          | Node (tree1, _, _) -> tree1
-     in
-     let rec pomozna tree =
-          match tree with
-          | Empty -> None
-          | Node (Empty, y, Empty) -> Some y
-          | Node (Empty, _, tree3) -> pomozna tree3
-          | Node (tree4, _, Empty) -> pomozna tree4 
-          | Node (tree1, x, tree2) -> succ tree1
-          in
-     pomozna start
-(* ni pravilanaaaaaaaaaaaaaaaa *)
-
+  match tree with
+  | Empty -> None
+  | Node (Empty, x, _) -> Some x
+  | Node (_, _, right) -> succ right
+(* narobe!!!! *)
 
 (*----------------------------------------------------------------------------*]
  Na predavanjih ste omenili dva načina brisanja elementov iz drevesa. Prvi 
