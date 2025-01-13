@@ -21,6 +21,37 @@
 #
 ###############################################################################
 
+def merge(target, list_1, list_2):
+    print(f"merging {list_1, list_2}")
+    if len(target) != len(list_1) + len(list_2):
+        print("dolžine seznamov niso uredu")
+        return IndexError
+
+    i, j = 0, 0
+    while i < len(list_1) and j < len(list_2):
+        # print(list_1, list_2)
+        if list_1[i] <= list_2[j]:
+            target[i+j] = list_1[i]
+            # print(f"i = {i}, list_1[i] = {list_1[i]}, list_2[j] = {list_1[j]}")
+            i += 1
+        else:
+            target[i+j] = list_2[j]
+            # print(f"j = {j}, list_1[i] = {list_1[i]}, list_2[j] = {list_1[j]}")
+            j += 1
+    while i < len(list_1):
+        target[i+j] = list_1[i]
+        i += 1
+    while j < len(list_2):
+        target[i+j] = list_1[j]
+        j += 1
+
+    return target
+
+def test_1():
+    list_1 = [1, 3, 5, 7, 10]
+    list_2 = [1, 2, 3, 4, 5, 6, 7]
+    return merge([-1 for _ in range(len(list_1) + len(list_2))], list_1, list_2)
+# print(f"test1 = \n {test_1()}")
 
 ###############################################################################
 # Tabelo želimo urediti z zlivanjem (merge sort). Tabelo razdelimo na polovici,
@@ -37,6 +68,39 @@
 #     >>> a
 #     [2, 3, 4, 5, 10, 11, 15, 17, 18]
 ###############################################################################
+
+def mergesort(a):
+    if a == None:
+        return a
+    def issorted(b):
+        i = 0
+        print(len(b))
+        if len(b) == 1:
+            return True
+        while i < len(b) - 1:
+            if b[i] > b[i+1]:
+                print(f"issorted = False")
+                return False
+            i += 1
+        print(f"issorted = True")
+        return True
+    
+    if issorted(a):
+        return
+    else:
+        i = len(a) // 2
+        a_1 = mergesort(a[:i])
+        a_2 = mergesort(a[i:])
+        if len(a) == 1:
+            return i
+        print(f"a_1 = {a_1}, a_2 = {a_2}")
+        merge([-1 for _ in range(len(a_1) + len(a_2))], a_1, a_2)
+    return a
+
+def test_2():
+    a = [10, 4, 5, 15, 11, 3, 17, 2, 18]
+    return mergesort(a)
+print(test_2())  
 
 ###############################################################################
 # Na predavanjih ste implementirali imperativno verzijo pivotiranja v OCamlu, 
